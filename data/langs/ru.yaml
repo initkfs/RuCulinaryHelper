@@ -1,0 +1,4 @@
+guiMainWindowTitle: Кулинарный помощник
+guiMainMenuFileItem: Файл
+guiMainMenuExitItem: Выход
+cliCulinaryCommandInterpretError: Ошибка обработки кулинарной команды
