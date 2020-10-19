@@ -7,6 +7,9 @@
 
 :- use_module('src/main_data_processor.pro').
 
+%for testing
+:- include('domain/ru_culinary/ru_culinary_main.pro').
+
 %for --> [для].
 %searchFor --> [найди].
 %searchForCombinations(X) --> searchFor, ([сочетание] ; [сочетания]), (for ; []), [X].
