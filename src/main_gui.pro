@@ -8,7 +8,7 @@
 
 :- use_module('src/main_data_processor.pro').
 
-:- include('domain/ru_culinary/ingredient.pro').
+:- include('domain/ru_culinary/ru_culinary_main.pro').
 
 runGui(Config, I18n):- 
     setof(Y, ингредиент(Y), IngredientsList),

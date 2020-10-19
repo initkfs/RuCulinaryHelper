@@ -11,11 +11,7 @@
 
 :- use_module('src/core/util/string_util.pro').
 
-:- include('domain/ru_culinary/ingredient.pro').
-:- include('domain/ru_culinary/physical_characteristics.pro').
-:- include('domain/ru_culinary/culinary_methods.pro').
-:- include('domain/ru_culinary/culinary_dishes.pro').
-:- include('domain/ru_culinary/ingredient_combinations.pro').
+:- include('domain/ru_culinary/ru_culinary_main.pro').
 
 getDataForIngredient(Ingredient, OutputString):-
     string_util:createStringBuffer(StringBuffer, Stream),
