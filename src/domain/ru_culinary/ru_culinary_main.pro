@@ -7,3 +7,4 @@
 :- include('culinary_methods.pro').
 :- include('culinary_dishes.pro').
 :- include('ingredient_combinations.pro').
+:- include('culinary_semifinished.pro').
