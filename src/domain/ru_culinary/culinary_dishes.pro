@@ -2,6 +2,17 @@
 @author initkfs
 */
 
+бульон(мясо).
+бульон(кости).
+бульон(птица).
+бульон(рыба).
+
+основаСупа(вода).
+основаСупа(отвар).
+основаСупа(молоко).
+основаСупа(квас).
+основаСупа(бульон).
+
 основнойИнгредиент(X, M):- 
     варка(X), 
     клубнеплод(X), 
@@ -34,3 +45,9 @@
         [AdditionalIngredientsList],
         [AdditionalIngredientsMassList]), 
         L).
+
+нормальныйБульон(MassProductKg, VolumeLiquidL):-
+    VolumeLiquidL is MassProductKg * 4.
+
+концентрированныйБульон(MassProductKg, VolumeLiquidL):-
+    VolumeLiquidL is MassProductKg * 1.25.
