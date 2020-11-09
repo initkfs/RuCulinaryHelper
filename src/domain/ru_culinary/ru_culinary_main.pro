@@ -8,3 +8,4 @@
 :- include('culinary_dishes.pro').
 :- include('ingredient_combinations.pro').
 :- include('culinary_semifinished.pro').
+:- include('culinary_condiments.pro').
