@@ -7,44 +7,16 @@
 бульон(птица).
 бульон(рыба).
 
-основаСупа(вода).
-основаСупа(отвар).
-основаСупа(молоко).
-основаСупа(квас).
-основаСупа(бульон).
+основаСупа(картофель, бульон).
 
-основнойИнгредиент(X, M):- 
-    варка(X), 
-    клубнеплод(X), 
-    M is 100.
+гарнирСупа(картофель, [картофель(260), морковь(50), 'лук репчатый'(25), томат(100)]).
+гарнирСупа(картофель, [картофель(400), морковь(100), 'лук репчатый'(100), томат(25), 'горошек зеленый'(20)]).
 
-дополнительныйИнгредиент(X, M):-
-    варка(X),
-    корнеплод(X), 
-    M is 50.
+гарнирСупаДля(MainIngredient, OtherIngredientList):- 
+    findall(Y, гарнирСупа(MainIngredient, Y), OtherIngredientList).
 
-акцентныйИнгредиент(X):- специя(X); приправа(X); пряность(X).
-
-суп(Liquid, MainIngredientsList, MainIngredientsMassList, AdditionalIngredientsList, AdditionalIngredientsMassList):-
-    жидкость(Liquid),
-    maplist(основнойИнгредиент, MainIngredientsList, MainIngredientsMassList),
-    maplist(дополнительныйИнгредиент, AdditionalIngredientsList, AdditionalIngredientsMassList).
-
-рецептСупа(L):- 
-    findall(
-        [Liquid, 
-        MainIngredientsList, 
-        MainIngredientsMassList, 
-        AdditionalIngredientsList,
-        AdditionalIngredientsMassList], 
-        
-        суп(
-        Liquid, 
-        [MainIngredientsList], 
-        [MainIngredientsMassList], 
-        [AdditionalIngredientsList],
-        [AdditionalIngredientsMassList]), 
-        L).
+заправочныйСупНаОснове(MainIngredient, IngredientList):- 
+    гарнирСупаДля(MainIngredient, IngredientList).
 
 нормальныйБульон(MassProductKg, VolumeLiquidL):-
     VolumeLiquidL is MassProductKg * 4.

@@ -4,7 +4,7 @@
 :- module(main_database_service, [
     getDataForIngredient/2, 
     printCombinations/2, 
-    getDataForRecipeSoup/1
+    getDataForRecipeSoup/2
     ]).
 
 :- use_module(library(dcg/basics)).
@@ -33,42 +33,26 @@ printCombinations(Ingredient, Stream):-
     format(Stream, 'Если ~w пожарить, то можно взять: ~n', Ingredient),
     formatList(Stream, ListCombinationsForRoast, 0).
 
-getDataForRecipeSoup(ResultString):-
+getDataForRecipeSoup(Ingredient, ResultString):-
     string_util:createStringBuffer(StringBuffer, Stream),
-    рецептСупа(L),
-    formatRecipe(Stream, L),
+    заправочныйСупНаОснове(Ingredient, L),
+    formatRecipeSoup(Ingredient, Stream, L),   
     string_util:closeAndReadStringBuffer(ResultString, StringBuffer, Stream).
 
-formatRecipe(_, []).
-formatRecipe(Stream, [H|T]):-
+formatRecipeSoup(_, _, []).
+formatRecipeSoup(Ingredient, Stream, [H|T]):-
+    nl(Stream),
     writeln(Stream, "Рецепт супа:"),
     formatRecipeParts(Stream, H),
-    formatRecipe(Stream, T).
+    formatRecipeSoup(Ingredient, Stream, T).
 
 formatRecipeParts(_, []).
-formatRecipeParts(Stream, [N|[]]):-
-    formatRecipePartsAsIngredientOrMass(Stream, N).
-formatRecipeParts(Stream, [H|[N|T]]):-
-    formatRecipePartsAsIngredientOrMass(Stream, H, N),
+formatRecipeParts(Stream, [H|T]):-
+    H =.. IngredientData,
+    nth0(0, IngredientData, IngredientName),
+    nth0(1, IngredientData, IngredientMass),
+    format(Stream, '~w ~d гр. ~n', [IngredientName, IngredientMass]),
     formatRecipeParts(Stream, T).
-
-formatRecipePartsAsIngredientOrMass(Stream, Ingredient):-
-    atom(Ingredient),
-    writeln(Stream, Ingredient);
-    number(Ingredient),
-    format(Stream, " ~d гр. ~n", Ingredient).
-formatRecipePartsAsIngredientOrMass(Stream, Ingredient, NextIngredient):-
-    atom(Ingredient),
-    atom(NextIngredient),
-    writeln(Stream, Ingredient),
-    write(Stream, NextIngredient);
-    number(Ingredient), 
-    atom(NextIngredient),
-    format(Stream, " ~d гр. ~n", Ingredient),
-    write(Stream, NextIngredient);
-    atom(Ingredient),
-    number(NextIngredient),
-    format(Stream, "~w ~d гр. ~n", [Ingredient, NextIngredient]).
 
 formatList(_, [], _).
 formatList(Stream, [H|T], Index) :-

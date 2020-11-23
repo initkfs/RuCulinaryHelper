@@ -14,7 +14,7 @@
 %searchFor --> [найди].
 %searchForCombinations(X) --> searchFor, ([сочетание] ; [сочетания]), (for ; []), [X].
 searchForCombinations(X) --> ([сочетание] ; [сочетания]), [X].
-generateRecipeSoup --> ([суп]).
+generateRecipeSoup(X) --> ([суп], [X]).
 
 interpretCommand(Config, I18n, Command, ResultString):-
     atomic_list_concat(WordsList,' ', Command),
@@ -24,7 +24,7 @@ interpretCommand(Config, I18n, Command, ResultString):-
 
 parseCommand(_, _, _, WordsList, ResultString):-
     phrase(searchForCombinations(X), WordsList), getDataForIngredient(X, ResultString);
-    phrase(generateRecipeSoup, WordsList), getDataForRecipeSoup(ResultString).
+    phrase(generateRecipeSoup(X), WordsList), getDataForRecipeSoup(X, ResultString).
 
 formatList(_, [], _).
 formatList(Stream, [H|T], Index) :-
