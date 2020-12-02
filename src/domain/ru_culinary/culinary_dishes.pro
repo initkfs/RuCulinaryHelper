@@ -2,28 +2,30 @@
 @author initkfs
 */
 
-бульон(мясо).
-бульон(кости).
-бульон(птица).
-бульон(рыба).
+мяснойБульон(птица).
+мяснойБульон(кости).
+мяснойБульон(мясо).
 
-основаСупа(картофель, бульон).
+основаСупа(овощнойГарнир, мяснойБульон).
 
+гарнирСупа(овощнойГарнир, картофель(260)).
 гарнирСупа(овощнойГарнир,'лук репчатый'(25)).
 гарнирСупа(овощнойГарнир, морковь(50)).
 гарнирСупа(овощнойГарнир, томат(100)).
 
-основаГарнира(картофель, 260, овощнойГарнир).
+гарнирыДляИнгредиента(Ingredient, GarnishList):-
+    findall(X, гарнирСупа(X, Ingredient), GarnishList).
 
+игредиентыДляГарнира(Garnish, IngredientList):-
+    findall(Y, гарнирСупа(Garnish, Y), IngredientList).
 
-гарнирСупа(X, XMass, L):- 
-    findall([A, B, C], основаГарнира(A, B, C), L).
+основаДляГарнира(Garnish, SoupBaseIngredientsList):-
+    findall(Y, основаСупа(Garnish, Y), SoupBaseIngredientsList).
 
-гарнирСупаДля(MainIngredient, MainIngredientMass, OtherIngredientList):- 
-    findall(Y, гарнирСупа(MainIngredient, Y), OtherIngredientList).
-
-заправочныйСупНаОснове(MainIngredient, IngredientList):- 
-    гарнирСупа(MainIngredient, _, IngredientList).
+заправочныйСупНаОснове(MainIngredient, GarnishIngredientList):- 
+    functor(MainIngredientTerm, MainIngredient, 1),
+    гарнирыДляИнгредиента(MainIngredientTerm, SideDishesForSoup),
+    maplist(игредиентыДляГарнира, SideDishesForSoup, GarnishIngredientList).
 
 нормальныйБульон(MassProductKg, VolumeLiquidL):-
     VolumeLiquidL is MassProductKg * 4.
