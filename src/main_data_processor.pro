@@ -36,6 +36,8 @@ printCombinations(Ingredient, Stream):-
 getDataForRecipeSoup(Ingredient, ResultString):-
     string_util:createStringBuffer(StringBuffer, Stream),
     заправочныйСупНаОснове(Ingredient, L),
+    writeln(L),
+    halt,
     formatRecipeSoup(Ingredient, Stream, L),   
     string_util:closeAndReadStringBuffer(ResultString, StringBuffer, Stream).
 

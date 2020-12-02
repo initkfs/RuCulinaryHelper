@@ -9,14 +9,21 @@
 
 основаСупа(картофель, бульон).
 
-гарнирСупа(картофель, [картофель(260), морковь(50), 'лук репчатый'(25), томат(100)]).
-гарнирСупа(картофель, [картофель(400), морковь(100), 'лук репчатый'(100), томат(25), 'горошек зеленый'(20)]).
+гарнирСупа(овощнойГарнир,'лук репчатый'(25)).
+гарнирСупа(овощнойГарнир, морковь(50)).
+гарнирСупа(овощнойГарнир, томат(100)).
 
-гарнирСупаДля(MainIngredient, OtherIngredientList):- 
+основаГарнира(картофель, 260, овощнойГарнир).
+
+
+гарнирСупа(X, XMass, L):- 
+    findall([A, B, C], основаГарнира(A, B, C), L).
+
+гарнирСупаДля(MainIngredient, MainIngredientMass, OtherIngredientList):- 
     findall(Y, гарнирСупа(MainIngredient, Y), OtherIngredientList).
 
 заправочныйСупНаОснове(MainIngredient, IngredientList):- 
-    гарнирСупаДля(MainIngredient, IngredientList).
+    гарнирСупа(MainIngredient, _, IngredientList).
 
 нормальныйБульон(MassProductKg, VolumeLiquidL):-
     VolumeLiquidL is MassProductKg * 4.
