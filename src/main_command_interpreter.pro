@@ -7,7 +7,9 @@
 
 :- use_module('src/main_data_processor.pro').
 
-%for testing
+:- use_module('domain/ru_culinary/soup/soup_processor.pro').
+
+%for testing, TODO remove
 :- include('domain/ru_culinary/ru_culinary_main.pro').
 
 %for --> [для].
@@ -24,7 +26,7 @@ interpretCommand(Config, I18n, Command, ResultString):-
 
 parseCommand(_, _, _, WordsList, ResultString):-
     phrase(searchForCombinations(X), WordsList), getDataForIngredient(X, ResultString);
-    phrase(generateRecipeSoup(X), WordsList), getDataForRecipeSoup(X, ResultString).
+    phrase(generateRecipeSoup(X), WordsList), soup_processor:buildRecipeSoupForIngredient(X, ResultString).
 
 formatList(_, [], _).
 formatList(Stream, [H|T], Index) :-

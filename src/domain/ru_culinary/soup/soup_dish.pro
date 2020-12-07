@@ -1,10 +1,7 @@
 /**
 @author initkfs
 */
-
-мяснойБульон(птица).
-мяснойБульон(кости).
-мяснойБульон(мясо).
+:- include('../broth/broth_dish.pro').
 
 основаСупа(овощнойГарнир, мяснойБульон).
 
@@ -26,9 +23,3 @@
     functor(MainIngredientTerm, MainIngredient, 1),
     гарнирыДляИнгредиента(MainIngredientTerm, SideDishesForSoup),
     maplist(игредиентыДляГарнира, SideDishesForSoup, GarnishIngredientList).
-
-нормальныйБульон(MassProductKg, VolumeLiquidL):-
-    VolumeLiquidL is MassProductKg * 4.
-
-концентрированныйБульон(MassProductKg, VolumeLiquidL):-
-    VolumeLiquidL is MassProductKg * 1.25.
