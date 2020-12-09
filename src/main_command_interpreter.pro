@@ -4,6 +4,7 @@
 :- module(main_command_interpreter, [interpretCommand/4]).
 
 :- use_module(library(dcg/basics)).
+:- use_module(library(pcre)).
 
 :- use_module('src/main_data_processor.pro').
 
@@ -16,7 +17,7 @@
 %searchFor --> [найди].
 %searchForCombinations(X) --> searchFor, ([сочетание] ; [сочетания]), (for ; []), [X].
 searchForCombinations(X) --> ([сочетание] ; [сочетания]), [X].
-generateRecipeSoup(X) --> ([суп], [X]).
+generateRecipeSoup(X) --> [суп], [X].
 
 interpretCommand(Config, I18n, Command, ResultString):-
     atomic_list_concat(WordsList,' ', Command),
@@ -26,7 +27,11 @@ interpretCommand(Config, I18n, Command, ResultString):-
 
 parseCommand(_, _, _, WordsList, ResultString):-
     phrase(searchForCombinations(X), WordsList), getDataForIngredient(X, ResultString);
-    phrase(generateRecipeSoup(X), WordsList), soup_processor:buildRecipeSoupForIngredient(X, ResultString).
+    phrase(generateRecipeSoup(X), WordsList), 
+    re_replace("_", " ", X, RawString),
+    split_string(RawString, ",", "", IngredientsList),
+    maplist(atom_string, MainIngredientsAtomsList, IngredientsList),
+    soup_processor:buildRecipeSoupForIngredient(MainIngredientsAtomsList, ResultString).
 
 formatList(_, [], _).
 formatList(Stream, [H|T], Index) :-

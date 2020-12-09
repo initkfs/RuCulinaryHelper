@@ -10,8 +10,13 @@
 гарнирСупа(овощнойГарнир, морковь(50)).
 гарнирСупа(овощнойГарнир, томат(100)).
 
-гарнирыДляИнгредиента(Ingredient, GarnishList):-
-    findall(X, гарнирСупа(X, Ingredient), GarnishList).
+гарнирСупаИзИнгредиентов(_, []).
+гарнирСупаИзИнгредиентов(Garnish, [IngredientTerm|Tail]):-
+    гарнирСупа(Garnish, IngredientTerm),
+    гарнирСупаИзИнгредиентов(Garnish, Tail).
+
+гарнирыДляИнгредиентов(IngredientAtomsList, GarnishList):-
+    findall(X, гарнирСупаИзИнгредиентов(X, IngredientAtomsList), GarnishList).
 
 игредиентыДляГарнира(Garnish, IngredientList):-
     findall(Y, гарнирСупа(Garnish, Y), IngredientList).
@@ -19,7 +24,10 @@
 основаДляГарнира(Garnish, SoupBaseIngredientsList):-
     findall(Y, основаСупа(Garnish, Y), SoupBaseIngredientsList).
 
-заправочныйСупНаОснове(MainIngredient, GarnishIngredientList):- 
-    functor(MainIngredientTerm, MainIngredient, 1),
-    гарнирыДляИнгредиента(MainIngredientTerm, SideDishesForSoup),
+заправочныйСуп(MainIngredientAtomsList, GarnishIngredientList):-
+    length(MainIngredientAtomsList, MainIngredientCount),
+    length(ArityList, MainIngredientCount),
+    maplist(=(1), ArityList),
+    maplist(functor, MainIngredientTermsList, MainIngredientAtomsList, ArityList),
+    гарнирыДляИнгредиентов(MainIngredientTermsList, SideDishesForSoup),
     maplist(игредиентыДляГарнира, SideDishesForSoup, GarnishIngredientList).

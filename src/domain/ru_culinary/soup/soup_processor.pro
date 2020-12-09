@@ -7,18 +7,19 @@
 
 :- include('soup_dish.pro').
 
-buildRecipeSoupForIngredient(Ingredient, ResultString):-
+buildRecipeSoupForIngredient([], _).
+buildRecipeSoupForIngredient(IngredientAtomsList, ResultString):-
     string_util:createStringBuffer(StringBuffer, Stream),
-    заправочныйСупНаОснове(Ingredient, GarnishIngredients),
-    formatRecipeSoup(Ingredient, Stream, GarnishIngredients),   
+    заправочныйСуп(IngredientAtomsList, GarnishIngredients),
+    formatRecipeSoup(Stream, GarnishIngredients),   
     string_util:closeAndReadStringBuffer(ResultString, StringBuffer, Stream).
 
-formatRecipeSoup(_, _, []).
-formatRecipeSoup(Ingredient, Stream, [H|T]):-
+formatRecipeSoup(_, []).
+formatRecipeSoup(Stream, [H|T]):-
     nl(Stream),
     writeln(Stream, "Рецепт супа:"),
     formatRecipeParts(Stream, H),
-    formatRecipeSoup(Ingredient, Stream, T).
+    formatRecipeSoup(Stream, T).
 
 formatRecipeParts(_, []).
 formatRecipeParts(Stream, [H|T]):-
