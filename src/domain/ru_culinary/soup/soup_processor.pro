@@ -6,25 +6,41 @@
 :- use_module('src/core/util/string_util.pro').
 
 :- include('soup_dish.pro').
+:- include('./../culinary_cutting.pro').
 
 buildRecipeSoupForIngredient([], _).
 buildRecipeSoupForIngredient(IngredientAtomsList, ResultString):-
     string_util:createStringBuffer(StringBuffer, Stream),
-    заправочныйСуп(IngredientAtomsList, GarnishIngredients),
-    formatRecipeSoup(Stream, GarnishIngredients),   
+    findGarnishForIngredients(IngredientAtomsList, GarnishIngredients),
+    eachSoupGarnish(GarnishIngredients, Stream),
     string_util:closeAndReadStringBuffer(ResultString, StringBuffer, Stream).
 
-formatRecipeSoup(_, []).
-formatRecipeSoup(Stream, [H|T]):-
-    nl(Stream),
-    writeln(Stream, "Рецепт супа:"),
-    formatRecipeParts(Stream, H),
-    formatRecipeSoup(Stream, T).
+findGarnishForIngredients(MainIngredientAtomsList, GarnishList):-
+    length(MainIngredientAtomsList, MainIngredientCount),
+    length(ArityList, MainIngredientCount),
+    maplist(=(1), ArityList),
+    maplist(functor, MainIngredientTermsList, MainIngredientAtomsList, ArityList),
+    гарнирыДляИнгредиентов(MainIngredientTermsList, GarnishList).
 
-formatRecipeParts(_, []).
-formatRecipeParts(Stream, [H|T]):-
+eachSoupGarnish([], _).
+eachSoupGarnish([Garnish|T], Stream):-
+    игредиентыДляГарнира(Garnish, GarnishIngredientList),
+    суп(SoupName, Garnish),
+    formatRecipeSoup(SoupName, GarnishIngredientList, Stream),
+    eachSoupGarnish(T, Stream).
+
+formatRecipeSoup(_, [], _).
+formatRecipeSoup(SoupName, GarnishIngredientList, Stream):-
+    nl(Stream),
+    format(Stream, "Рецепт супа '~w':~n", SoupName),
+    formatRecipeParts(GarnishIngredientList, Stream).
+
+formatRecipeParts([], _).
+formatRecipeParts([H|T], Stream):-
     H =.. IngredientData,
     nth0(0, IngredientData, IngredientName),
     nth0(1, IngredientData, IngredientMass),
-    format(Stream, '~w ~d гр. ~n', [IngredientName, IngredientMass]),
-    formatRecipeParts(Stream, T).
+    findall(X, нарезка(IngredientName, суп, X), CuttingList),
+    atomic_list_concat(CuttingList, ',', CuttingResultAtom),
+    format(Stream, '~w ~d гр. ~a. ~n', [IngredientName, IngredientMass, CuttingResultAtom]),
+    formatRecipeParts(T, Stream).
