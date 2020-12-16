@@ -5,7 +5,7 @@
 
 :- use_module('src/core/util/string_util.pro').
 
-:- include('soup_dish.pro').
+:- include('soup_helper.pro').
 :- include('./../culinary_cutting.pro').
 
 buildRecipeSoupForIngredient([], _).
@@ -32,7 +32,8 @@ eachSoupGarnish([Garnish|T], Stream):-
 formatRecipeSoup(_, [], _).
 formatRecipeSoup(SoupName, GarnishIngredientList, Stream):-
     nl(Stream),
-    format(Stream, "Рецепт супа '~w':~n", SoupName),
+    string_util:capitalize(SoupName, CapitalizedSoupName),
+    format(Stream, "Рецепт супа '~w':~n", CapitalizedSoupName),
     formatRecipeParts(GarnishIngredientList, Stream).
 
 formatRecipeParts([], _).
@@ -40,7 +41,20 @@ formatRecipeParts([H|T], Stream):-
     H =.. IngredientData,
     nth0(0, IngredientData, IngredientName),
     nth0(1, IngredientData, IngredientMass),
-    findall(X, нарезка(IngredientName, суп, X), CuttingList),
-    atomic_list_concat(CuttingList, ',', CuttingResultAtom),
-    format(Stream, '~w ~d гр. ~a. ~n', [IngredientName, IngredientMass, CuttingResultAtom]),
+    format(Stream, '~w ', [IngredientName]),
+    formatStringOrMass(Stream, IngredientMass),
+    formatIngredientCutting(Stream, IngredientName),
     formatRecipeParts(T, Stream).
+
+formatStringOrMass(Stream, MustBeMass):-
+    number(MustBeMass),
+    format(Stream, "~d гр.", MustBeMass);
+    format(Stream, "~w.", MustBeMass).
+
+formatIngredientCutting(Stream, IngredientName):-
+    findall(X, нарезка(IngredientName, суп, X), CuttingList),
+    length(CuttingList, CuttingListLenght),
+    CuttingListLenght > 0,
+    atomic_list_concat(CuttingList, ',', CuttingResultAtom),
+    format(Stream, ' ~a. ~n', [CuttingResultAtom]);
+    format(Stream, '~n', []).
