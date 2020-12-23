@@ -1,3 +1,4 @@
 language: ru
 version: 0.1a
 docServerPort: 5050
+recipePath: "./data/recipes"

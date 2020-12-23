@@ -12,6 +12,7 @@
 
 :- use_module('src/core/app/exceptions.pro').
 :- use_module('src/main_command_interpreter.pro').
+:- use_module('src/main_database_filesystem_loader.pro').
 :- use_module('src/main_gui.pro').
 
 dataDir(Path):- Path = "./data/".
@@ -125,13 +126,15 @@ main(Argv) :-
 startApp(Config, I18n, Argv):-
     cliOptSpec(Config, I18n, Spec),
 	optparse:opt_parse(Spec, Argv, Opts, _),
+
+    main_database_filesystem_loader:loadRecipesFromDir(Config.recipePath),
     
     processCli(Config, I18n, Opts),
     beforeEnd(Config, I18n, Argv);
 
     beforeErrorStart(Config, I18n, Argv),
     writeln("Unable to process command line arguments"), 
-    printHelp(Config, I18n, Argv),
+    printHelp(Config, I18n),
     beforeErrorEnd(Config, I18n, Argv),
     exitWithSuccess.
 

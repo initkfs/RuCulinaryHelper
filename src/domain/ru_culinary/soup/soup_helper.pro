@@ -1,7 +1,13 @@
 /**
 @author initkfs
 */
-:- include('soup.pro').
+:- module(soup_helper, [
+    гарнирСупаИзИнгредиентов/2,
+    гарнирыДляИнгредиентов/2,
+    игредиентыДляГарнира/2
+]).
+
+:- use_module('soups.pro').
 
 гарнирСупаИзИнгредиентов(_, []).
 гарнирСупаИзИнгредиентов(Garnish, [IngredientTerm|Tail]):-

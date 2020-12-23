@@ -1,11 +1,15 @@
 /**
 @author initkfs
 */
-:- module(soup_processor, [buildRecipeSoupForIngredient/2]).
+:- module(soup_processor, [
+    buildRecipeSoupForIngredient/2, 
+    findGarnishForIngredients/2
+    ]).
 
 :- use_module('src/core/util/string_util.pro').
+:- use_module('soups.pro').
+:- use_module('soup_helper.pro').
 
-:- include('soup_helper.pro').
 :- include('./../culinary_cutting.pro').
 
 buildRecipeSoupForIngredient([], _).

@@ -6,7 +6,7 @@
 :- include('culinary_cutting.pro').
 :- include('culinary_methods.pro').
 
-:- include('soup/soup.pro').
+:-use_module('soup/soups.pro').
 :- include('ingredient_combinations.pro').
 :- include('culinary_semifinished.pro').
 :- include('culinary_condiments.pro').
