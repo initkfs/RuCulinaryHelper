@@ -1,7 +1,7 @@
 /** <module> Main data service
 @author initkfs
 */
-:- module(main_database_service, [
+:- module(main_data_processor, [
     getDataForIngredient/2, 
     printCombinations/2
     ]).
