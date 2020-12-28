@@ -1,7 +1,7 @@
 /**
 @author initkfs
 */
-:- module(soup_helper, [
+:- module(soup_service, [
     гарнирСупаИзИнгредиентов/2,
     гарнирыДляИнгредиентов/2,
     игредиентыДляГарнира/2

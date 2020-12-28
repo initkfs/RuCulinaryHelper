@@ -8,7 +8,7 @@
 
 :- use_module('src/core/util/string_util.pro').
 :- use_module('soups.pro').
-:- use_module('soup_helper.pro').
+:- use_module('soup_service.pro').
 
 :- include('./../culinary_cutting.pro').
 
