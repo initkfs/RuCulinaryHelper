@@ -1,11 +1,11 @@
 /**
 @author initkfs
 */
-:- include('ingredient.pro').
-:- include('culinary_cutting.pro').
-:- include('culinary_methods.pro').
-:- include('ingredient_combinations.pro').
-:- include('culinary_condiments.pro').
+:- include('database/ingredient.pro').
+:- include('database/culinary_cutting.pro').
+:- include('database/culinary_methods.pro').
+:- include('database/ingredient_combinations.pro').
+:- include('database/culinary_condiments.pro').
 
-:-use_module('soup/soups.pro').
+:-use_module('database/soup/soups.pro').
 

@@ -7,7 +7,7 @@
     игредиентыДляГарнира/2
 ]).
 
-:- use_module('soups.pro').
+:- use_module('./../../database/soup/soups.pro').
 
 гарнирСупаИзИнгредиентов(_, []).
 гарнирСупаИзИнгредиентов(Garnish, [IngredientTerm|Tail]):-

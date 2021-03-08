@@ -8,7 +8,7 @@
 
 :- use_module('src/main_data_processor.pro').
 
-:- use_module('domain/ru_culinary/soup/soup_processor.pro').
+:- use_module('domain/ru_culinary/services/soup/soup_processor.pro').
 
 %for testing, TODO remove
 :- include('domain/ru_culinary/ru_culinary_main.pro').
