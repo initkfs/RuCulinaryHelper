@@ -7,7 +7,7 @@
     суп/2
 ]).
 
-:- include('../broth/broth_dish.pro').
+:- include('broth_dish.pro').
 
 :- dynamic(суп/2).
 :- dynamic(гарнирСупа/2).

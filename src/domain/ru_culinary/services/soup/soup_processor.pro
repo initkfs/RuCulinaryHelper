@@ -7,7 +7,7 @@
     ]).
 
 :- use_module('src/core/util/string_util.pro').
-:- use_module('./../../database/soup/soups.pro').
+:- use_module('./../../database/soups.pro').
 :- use_module('soup_service.pro').
 
 :- include('./../../database/culinary_cutting.pro').

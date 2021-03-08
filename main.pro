@@ -11,6 +11,7 @@
 :- use_module(library(yaml)).
 
 :- use_module('src/core/app/exceptions.pro').
+:- use_module('src/core/util/io_util.pro').
 :- use_module('src/main_command_interpreter.pro').
 :- use_module('src/main_database_filesystem_loader.pro').
 :- use_module('src/main_gui.pro').
@@ -56,6 +57,13 @@ cliOptSpec(_, _, [
         longflags([docbrowser]), 
         help('Run documentation browser.')],
 
+    [opt(cliSpellFlag), 
+        type(boolean), 
+        default(false),
+        shortflags([s]), 
+        longflags([spell]), 
+	    help('Check spelling for a domain database.')],
+
     [opt(cliCommandFlag), 
         type(atom), 
         default('command'),
@@ -72,6 +80,10 @@ processCli(Config, I18n, Opts):-
 
     member(cliVersionFlag(true), Opts), 
     printVersion(Config, I18n), 
+    exitWithSuccess;
+
+    member(cliSpellFlag(true), Opts), 
+    checkSpell(Config, I18n), 
     exitWithSuccess;
     
     member(cliGuiFlag(true), Opts), 
@@ -99,6 +111,20 @@ runDocServer(Config, _):-
     doc_server(Config.docServerPort),
     portray_text(true),
     doc_browser.
+
+checkSpell(Config, _):-
+    exists_directory(Config.domainDataBaseDirPath),
+    dirRegularFiles(Config.domainDataBaseDirPath, DatabaseFiles),
+    eachDatabaseFileForSpell(DatabaseFiles).
+
+eachDatabaseFileForSpell([]).
+eachDatabaseFileForSpell([DatabaseFile|T]):-
+    exists_file(DatabaseFile),
+    atom_string(DatabaseFile, DatabaseFilePath),
+    %! WARNING! Unsafe exec
+    string_concat("yaspeller --lang ru --format plain --report console --only-errors --ignore-capitalization ", DatabaseFilePath, SpellCommand),
+    shell(SpellCommand, _),
+    eachDatabaseFileForSpell(T).
 
 loadYamlResource(ResourcePath, YamlContent):-
     exists_file(ResourcePath),

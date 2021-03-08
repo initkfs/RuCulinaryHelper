@@ -7,5 +7,5 @@
 :- include('database/ingredient_combinations.pro').
 :- include('database/culinary_condiments.pro').
 
-:-use_module('database/soup/soups.pro').
+:-use_module('database/soups.pro').
 
