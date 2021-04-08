@@ -29,7 +29,7 @@ interpretCommand(Config, I18n, Command, ResultString):-
 
 parseCommand(_, _, _, WordsList, ResultString):-
     phrase(searchForCombinations(X), WordsList), getDataForIngredient(X, ResultString);
-    phrase(findCondimentForIngredient(X), WordsList), condiment_processor:getCondimentForIngredient(X, ResultString);
+    phrase(findCondimentForIngredient(X), WordsList), atom_string(X, IngredientsListAsString), condiment_processor:printCondimentsForIngredients(IngredientsListAsString, ResultString);
     phrase(generateRecipeSoup(X), WordsList), 
     re_replace("_", " ", X, RawString),
     split_string(RawString, ",", "", IngredientsList),
