@@ -147,7 +147,9 @@ main(Argv) :-
     beforeStart(Argv);
     loadConfig(Config),
     loadI18nResources(Config.language, I18n),
-    startApp(Config, I18n, Argv).
+    catch_with_backtrace(startApp(Config, I18n, Argv), Error,
+                         print_message(error, Error)),
+    halt.
 
 startApp(Config, I18n, Argv):-
     cliOptSpec(Config, I18n, Spec),
