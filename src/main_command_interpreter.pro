@@ -6,6 +6,7 @@
 :- use_module(library(dcg/basics)).
 :- use_module(library(pcre)).
 
+:- use_module('src/app_services.pro').
 :- use_module('src/main_data_processor.pro').
 
 :- use_module('domain/ru_culinary/services/soup/soup_processor.pro').

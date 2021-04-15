@@ -14,6 +14,7 @@
 :- use_module('src/core/util/io_util.pro').
 :- use_module('src/main_command_interpreter.pro').
 :- use_module('src/main_database_filesystem_loader.pro').
+:- use_module('src/app_services.pro').
 :- use_module('src/main_gui.pro').
 
 dataDir(Path):- Path = "./data/".
@@ -146,7 +147,10 @@ loadConfig(Config):-
 main(Argv) :-
     beforeStart(Argv);
     loadConfig(Config),
-    loadI18nResources(Config.language, I18n),
+    app_services:setMainConfig(Config),
+    app_services:getConfigValue("appCurrentLanguage", CurrentLanguage),
+    loadI18nResources(CurrentLanguage, I18n),
+    app_services:setMainI18N(I18n),
     catch_with_backtrace(startApp(Config, I18n, Argv), Error,
                          print_message(error, Error)),
     halt.
@@ -155,7 +159,8 @@ startApp(Config, I18n, Argv):-
     cliOptSpec(Config, I18n, Spec),
 	optparse:opt_parse(Spec, Argv, Opts, _),
 
-    main_database_filesystem_loader:loadRecipesFromDir(Config.recipePath),
+    app_services:getConfigValue("domainRecipePath", RecipePathConfigValue),
+    main_database_filesystem_loader:loadRecipesFromDir(RecipePathConfigValue),
     
     processCli(Config, I18n, Opts),
     beforeEnd(Config, I18n, Argv);
