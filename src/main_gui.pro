@@ -1,21 +1,25 @@
 /** <module> Main gui
 @author initkfs
 */
-:- module(main_gui, [runGui/2]).
+:- module(main_gui, [runGui/0]).
 
 :- use_module(library(pce)).
 :- use_module(library(toolbar)).
 
+:- use_module('src/app_services.pro').
 :- use_module('src/main_data_processor.pro').
 
 :- include('domain/ru_culinary/ru_culinary_main.pro').
 
-runGui(Config, I18n):- 
+runGui:- 
     setof(Y, ингредиент(Y), IngredientsList),
-    runViewer(Config, I18n, IngredientsList).
+    runViewer(IngredientsList).
 
-runViewer(_, I18n, IngredientList):- 
-     new(CulinaryHelper, frame(I18n.guiMainWindowTitle)),
+runViewer(IngredientList):-
+
+     app_services:getI18nValue("guiMainWindowTitle", MainWindowTitle),
+     new(CulinaryHelper, frame(MainWindowTitle)),
+
      send(CulinaryHelper, append, new(Menu, tool_dialog)),
      send(CulinaryHelper, append, new(IngredientsBrowser, browser)),
      send(CulinaryHelper, append, new(DialogPanel, dialog)),
@@ -26,8 +30,10 @@ runViewer(_, I18n, IngredientList):-
      send(Menu, above, IngredientsBrowser),
 
      send(Menu, append, new(MenuBar, menu_bar)),
-     send(MenuBar, append, new(FileMenuItem, popup(I18n.guiMainMenuFileItem))),
-     send_list(FileMenuItem, append, [menu_item(I18n.guiMainMenuExitItem, message(CulinaryHelper, destroy))]),
+     app_services:getI18nValue("guiMainMenuFileItem", MainMenuFileItem),
+     send(MenuBar, append, new(FileMenuItem, popup(MainMenuFileItem))),
+     app_services:getI18nValue("guiMainMenuExitItem", MainMenuExitItem),
+     send_list(FileMenuItem, append, [menu_item(MainMenuExitItem, message(CulinaryHelper, destroy))]),
           
      send_list(IngredientsBrowser, append, IngredientList),
      send(IngredientsBrowser, open_message, message(@prolog, setTextToMainTextArea, MainTextArea, @arg1?key)),

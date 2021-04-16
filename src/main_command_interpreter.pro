@@ -1,7 +1,7 @@
 /** <module> Main command interpreter
 @author initkfs
 */
-:- module(main_command_interpreter, [interpretCommand/4]).
+:- module(main_command_interpreter, [interpretCommand/2]).
 
 :- use_module(library(dcg/basics)).
 :- use_module(library(pcre)).
@@ -22,13 +22,14 @@ searchForCombinations(X) --> ([сочетание] ; [сочетания]), [X].
 generateRecipeSoup(X) --> [суп], [X].
 findCondimentForIngredient(X) --> [добавка], [X].
 
-interpretCommand(Config, I18n, Command, ResultString):-
+interpretCommand(Command, ResultString):-
     atomic_list_concat(WordsList,' ', Command),
-    parseCommand(Config, I18n, Command, WordsList, ResultString);
-    writeln(I18n.cliCulinaryCommandInterpretError),
+    parseCommand(Command, WordsList, ResultString);
+    app_services:getI18nValue("cliCulinaryCommandInterpretError", CommandErrorText),
+    writeln(CommandErrorText),
     exitWithFail.
 
-parseCommand(_, _, _, WordsList, ResultString):-
+parseCommand(_, WordsList, ResultString):-
     phrase(searchForCombinations(X), WordsList), getDataForIngredient(X, ResultString);
     phrase(findCondimentForIngredient(X), WordsList), atom_string(X, IngredientsListAsString), condiment_processor:printCondimentsForIngredients(IngredientsListAsString, ResultString);
     phrase(generateRecipeSoup(X), WordsList), 

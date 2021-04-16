@@ -1,4 +1,4 @@
-/** <module> Main command interpreter
+/** <module> Global app services
 @author initkfs
 */
 :- module(app_services, [

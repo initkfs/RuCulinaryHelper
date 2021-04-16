@@ -29,7 +29,7 @@ langDir(Path):-
 mainConfigFile(Path):-
     withDataDir("configs/main.yaml", Path).
 
-cliOptSpec(_, _, [
+cliOptSpec([
     [opt(cliHelpFlag), 
         type(boolean),
         default(false),
@@ -73,49 +73,52 @@ cliOptSpec(_, _, [
 	    help('Natural language command for interpretation.')]
 ]).
 
-processCli(Config, I18n, Opts):- 
+processCli(Opts):- 
     
     member(cliHelpFlag(true), Opts), 
-    printHelp(Config, I18n), 
+    printHelp, 
     exitWithSuccess;
 
     member(cliVersionFlag(true), Opts), 
-    printVersion(Config, I18n), 
+    printVersion, 
     exitWithSuccess;
 
     member(cliSpellFlag(true), Opts), 
-    checkSpell(Config, I18n), 
+    checkSpell, 
     exitWithSuccess;
     
     member(cliGuiFlag(true), Opts), 
-    main_gui:runGui(Config, I18n);
+    main_gui:runGui;
     
     member(cliDocBrowserFlag(true), Opts), 
-    runDocServer(Config, I18n);
+    runDocServer;
     
     member(cliCommandFlag(Command), Opts), 
-    main_command_interpreter:interpretCommand(Config, I18n, Command, ResultString),
+    main_command_interpreter:interpretCommand(Command, ResultString),
     writeln(ResultString),
     exitWithSuccess.
 
-printHelp(Config, I18n):-
-	cliOptSpec(Config, I18n, CliSpec),		
+printHelp:-
+	cliOptSpec(CliSpec),		
 	optparse:opt_help(CliSpec, HelpText),
 	format('Usage:~n'),
 	write(HelpText).
 
-printVersion(Config, _):-
-    string_concat("Version: ", Config.version, VersionString),
+printVersion:-
+    app_services:getConfigValue("appVersion", AppVersion),
+    string_concat("Version: ", AppVersion, VersionString),
     writeln(VersionString).
 
-runDocServer(Config, _):-
-    doc_server(Config.docServerPort),
+runDocServer:-
+    app_services:getConfigValue("appDocServerPort", DocServerPort),
+    doc_server(DocServerPort),
     portray_text(true),
     doc_browser.
 
-checkSpell(Config, _):-
-    exists_directory(Config.domainDataBaseDirPath),
-    dirRegularFiles(Config.domainDataBaseDirPath, DatabaseFiles),
+checkSpell:-
+    app_services:getConfigValue("domainDataBaseDirPath", DatabaseDirPath),
+    exists_directory(DatabaseDirPath),
+    dirRegularFiles(DatabaseDirPath, DatabaseFiles),
     eachDatabaseFileForSpell(DatabaseFiles).
 
 eachDatabaseFileForSpell([]).
@@ -151,35 +154,41 @@ main(Argv) :-
     app_services:getConfigValue("appCurrentLanguage", CurrentLanguage),
     loadI18nResources(CurrentLanguage, I18n),
     app_services:setMainI18N(I18n),
-    catch_with_backtrace(startApp(Config, I18n, Argv), Error,
+    catch_with_backtrace(startApp(Argv), Error,
                          print_message(error, Error)),
-    halt.
+    (  nonvar(Error)->  
+        stopApp;
+        true
+    ).
 
-startApp(Config, I18n, Argv):-
-    cliOptSpec(Config, I18n, Spec),
+startApp(Argv):-
+    cliOptSpec(Spec),
 	optparse:opt_parse(Spec, Argv, Opts, _),
 
     app_services:getConfigValue("domainRecipePath", RecipePathConfigValue),
     main_database_filesystem_loader:loadRecipesFromDir(RecipePathConfigValue),
     
-    processCli(Config, I18n, Opts),
-    beforeEnd(Config, I18n, Argv);
+    processCli(Opts),
+    beforeEnd(Argv);
 
-    beforeErrorStart(Config, I18n, Argv),
+    beforeErrorStart(Argv),
     writeln("Unable to process command line arguments"), 
-    printHelp(Config, I18n),
-    beforeErrorEnd(Config, I18n, Argv),
+    printHelp,
+    beforeErrorEnd(Argv),
     exitWithSuccess.
+
+stopApp:-
+    halt.
 
 beforeStart(_):- false.
 
-beforeEnd(_,_,_):- true.
+beforeEnd(_):- true.
 
-beforeErrorStart(_,_,_):- true.
+beforeErrorStart(_):- true.
 
-beforeErrorEnd(_,_,_):- true.
+beforeErrorEnd(_):- true.
 
 exitWithSuccess:-
-    halt.
+    stopApp.
 exitWithFail:-
-    halt.
+    stopApp.

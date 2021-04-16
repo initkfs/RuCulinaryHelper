@@ -1,5 +1,5 @@
 appCurrentLanguage: ru
-version: 0.1a
-docServerPort: 5050
+appVersion: 0.1a
+appDocServerPort: 5050
 domainRecipePath: "./data/recipes"
 domainDataBaseDirPath: "./src/domain/ru_culinary/database"
