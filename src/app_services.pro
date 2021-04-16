@@ -11,6 +11,8 @@
 :- use_module(library(error)).
 :- use_module(library(prolog_stack)).
 
+:- use_module('src/core/logger/logger.pro').
+
 getOrSetService(ServiceKeyAtom, Service):-
     not(atom(ServiceKeyAtom)),
     throw(error(type_error("Atom", ServiceKeyAtom), context(_, "")));
@@ -49,3 +51,34 @@ setMainI18N(I18n):-
 getI18nValue(KeyString, Value):-
     mainI18nKey(I18nName),
     getServiceDictValue(KeyString, I18nName, Value).
+
+mainLoggerKey(LoggerName):- 
+    createServiceName("MainLogger", LoggerName).
+
+setMainLogger(Logger):-
+    mainLoggerKey(LoggerName),
+    getOrSetService(LoggerName, Logger).
+
+getLogger(Logger):-
+    mainLoggerKey(LoggerName),
+    getOrSetService(LoggerName, Logger).
+
+logError(Message):-
+    getLogger(Logger),
+    logger:logError(Logger, Message).
+
+logWarn(Message):-
+    getLogger(Logger),
+    logger:logWarn(Logger, Message).
+
+logInfo(Message):-
+    getLogger(Logger),
+    logger:logInfo(Logger, Message).
+
+logDebug(Message):-
+    getLogger(Logger),
+    logger:logDebug(Logger, Message).
+
+logTrace(Message):-
+    getLogger(Logger),
+    logger:logTrace(Logger, Message).

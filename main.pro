@@ -11,6 +11,7 @@
 :- use_module(library(yaml)).
 
 :- use_module('src/core/app/exceptions.pro').
+:- use_module('src/core/logger/logger.pro').
 :- use_module('src/core/util/io_util.pro').
 :- use_module('src/main_command_interpreter.pro').
 :- use_module('src/main_database_filesystem_loader.pro').
@@ -141,7 +142,9 @@ loadI18nResources(Language, I18n):-
     string_concat(Language, ".yaml", ResourceFileName),
     langDir(LangDirPath),
     string_concat(LangDirPath, ResourceFileName, ResourcePath),
-    loadYamlResource(ResourcePath, I18n).
+    loadYamlResource(ResourcePath, I18n),
+    format(string(LoadI18nMessage), "Load I18n, language: ~s, resource: ~s", [Language, ResourcePath]),
+    app_services:logDebug(LoadI18nMessage).
 
 loadConfig(Config):-
     mainConfigFile(ConfigFilePath),
@@ -151,9 +154,19 @@ main(Argv) :-
     beforeStart(Argv);
     loadConfig(Config),
     app_services:setMainConfig(Config),
+    
+    app_services:getConfigValue("appMainLoggerLevel", LoggerLevelString),
+    logger:createLogger(LoggerLevelString, Logger),
+    logger:addLogHandler(logger:simpleCliLogHandler),
+    app_services:setMainLogger(Logger),
+    logger:getLoggerLevel(Logger, LoggerLevelAtom),
+    format(string(LoadLoggerMessage), "Load logger, level: ~a, config level: ~s", [LoggerLevelAtom, LoggerLevelString]),
+    app_services:logDebug(LoadLoggerMessage),
+    
     app_services:getConfigValue("appCurrentLanguage", CurrentLanguage),
     loadI18nResources(CurrentLanguage, I18n),
     app_services:setMainI18N(I18n),
+    
     catch_with_backtrace(startApp(Argv), Error,
                          print_message(error, Error)),
     (  nonvar(Error)->  
