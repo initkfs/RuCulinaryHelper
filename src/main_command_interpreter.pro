@@ -24,6 +24,10 @@ findCondimentForIngredient(X) --> [добавка], [X].
 
 interpretCommand(Command, ResultString):-
     atomic_list_concat(WordsList,' ', Command),
+
+    format(string(RecieveCommandMessage), "Received command for parsing: '~s'", Command),
+    app_services:logDebug(RecieveCommandMessage),
+
     parseCommand(Command, WordsList, ResultString);
     app_services:getI18nValue("cliCulinaryCommandInterpretError", CommandErrorText),
     writeln(CommandErrorText),

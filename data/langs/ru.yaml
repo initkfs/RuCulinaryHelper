@@ -2,3 +2,10 @@ guiMainWindowTitle: Кулинарный помощник
 guiMainMenuFileItem: Файл
 guiMainMenuExitItem: Выход
 cliCulinaryCommandInterpretError: Ошибка обработки кулинарной команды
+culinaryCommandFindCondimentsFor: Поиск добавок для
+culinaryIngredients: Ингредиенты
+culinaryCondiments: Добавки
+culinaryСondimentsMix: Смесь
+culinaryFoundCondimentsFor: Найдены добавки для
+culinaryFoundCondimentsForCondiments: Найдены добавки для добавок
+explainGoalThatApplied: Было использовано правило
