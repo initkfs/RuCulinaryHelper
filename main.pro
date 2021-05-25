@@ -166,7 +166,10 @@ main(Argv) :-
     app_services:getConfigValue("appCurrentLanguage", CurrentLanguage),
     loadI18nResources(CurrentLanguage, I18n),
     app_services:setMainI18N(I18n),
-    
+
+    app_services:getConfigValue("domainRecipePath", RecipePathConfigValue),
+    main_database_filesystem_loader:loadRecipesFromDir(RecipePathConfigValue),
+
     catch_with_backtrace(startApp(Argv), Error,
                          print_message(error, Error)),
     (  nonvar(Error)->  
@@ -178,9 +181,6 @@ startApp(Argv):-
     cliOptSpec(Spec),
 	optparse:opt_parse(Spec, Argv, Opts, _),
 
-    app_services:getConfigValue("domainRecipePath", RecipePathConfigValue),
-    main_database_filesystem_loader:loadRecipesFromDir(RecipePathConfigValue),
-    
     processCli(Opts),
     beforeEnd(Argv);
 

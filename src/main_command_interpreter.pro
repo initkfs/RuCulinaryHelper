@@ -31,7 +31,7 @@ interpretCommand(Command, ResultString):-
     parseCommand(Command, WordsList, ResultString);
     app_services:getI18nValue("cliCulinaryCommandInterpretError", CommandErrorText),
     writeln(CommandErrorText),
-    exitWithFail.
+    false.
 
 parseCommand(_, WordsList, ResultString):-
     phrase(searchForCombinations(X), WordsList), getDataForIngredient(X, ResultString);
