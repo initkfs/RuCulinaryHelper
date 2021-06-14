@@ -16,7 +16,6 @@
 :- use_module('src/main_command_interpreter.pro').
 :- use_module('src/main_database_filesystem_loader.pro').
 :- use_module('src/app_services.pro').
-:- use_module('src/main_gui.pro').
 
 dataDir(Path):- Path = "./data/".
 
@@ -44,13 +43,6 @@ cliOptSpec([
         shortflags([v]), 
         longflags([version]), 
         help('Print version.')],
-
-	[opt(cliGuiFlag),  
-        type(boolean), 
-        default(false), 
-        shortflags([g]), 
-        longflags([gui]), 
-        help('Run simble GUI viewer.')],
 
     [opt(cliDocBrowserFlag),
         type(boolean), 
@@ -87,9 +79,6 @@ processCli(Opts):-
     member(cliSpellFlag(true), Opts), 
     checkSpell, 
     exitWithSuccess;
-    
-    member(cliGuiFlag(true), Opts), 
-    main_gui:runGui;
     
     member(cliDocBrowserFlag(true), Opts), 
     runDocServer;
