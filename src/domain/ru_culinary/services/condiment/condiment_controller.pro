@@ -1,7 +1,7 @@
 /**
 @author initkfs
 */
-:- module(condiment_processor, [
+:- module(condiment_controller, [
         printCondimentsForIngredients/2
     ]).
 

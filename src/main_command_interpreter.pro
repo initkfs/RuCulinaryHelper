@@ -9,8 +9,8 @@
 :- use_module('src/app_services.pro').
 :- use_module('src/main_data_processor.pro').
 
-:- use_module('domain/ru_culinary/services/soup/soup_processor.pro').
-:- use_module('domain/ru_culinary/services/condiment/condiment_processor.pro').
+:- use_module('domain/ru_culinary/services/soup/soup_controller.pro').
+:- use_module('domain/ru_culinary/services/condiment/condiment_controller.pro').
 
 %for testing, TODO remove
 :- include('domain/ru_culinary/ru_culinary_main.pro').
@@ -34,13 +34,13 @@ interpretCommand(Command, ResultString):-
     false.
 
 parseCommand(_, WordsList, ResultString):-
-    phrase(searchForCombinations(X), WordsList), getDataForIngredient(X, ResultString);
-    phrase(findCondimentForIngredient(X), WordsList), atom_string(X, IngredientsListAsString), condiment_processor:printCondimentsForIngredients(IngredientsListAsString, ResultString);
+    phrase(searchForCombinations(X), WordsList), main_data_processor:getDataForIngredient(X, ResultString);
+    phrase(findCondimentForIngredient(X), WordsList), atom_string(X, IngredientsListAsString), condiment_controller:printCondimentsForIngredients(IngredientsListAsString, ResultString);
     phrase(generateRecipeSoup(X), WordsList), 
     re_replace("_", " ", X, RawString),
     split_string(RawString, ",", "", IngredientsList),
     maplist(atom_string, MainIngredientsAtomsList, IngredientsList),
-    soup_processor:buildRecipeSoupForIngredient(MainIngredientsAtomsList, ResultString).
+    soup_controller:buildRecipeSoupForIngredient(MainIngredientsAtomsList, ResultString).
 
 formatList(_, [], _).
 formatList(Stream, [H|T], Index) :-

@@ -1,7 +1,7 @@
 /**
 @author initkfs
 */
-:- module(soup_processor, [
+:- module(soup_controller, [
     buildRecipeSoupForIngredient/2, 
     findGarnishForIngredients/2
     ]).
